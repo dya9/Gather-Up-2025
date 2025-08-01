@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>When2Meet Clone</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            color: #333;
+            /* Remove overflow: hidden to allow scrolling */
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Back button */
+        #back-button {
+            position: fixed; /* Fixed position to stay visible while scrolling */
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #ff6f61;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        #back-button:hover {
+            background-color: #ff4a3d;
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header styles */
+        header {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Subheader styles */
+        .subheader {
+            text-align: center;
+            color: #555;
+            font-size: 1.2rem;
+            margin: 10px 0;
+            padding: 0 20px;
+            animation: slideIn 1.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Main container */
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto; /* Add margin to separate from header */
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+            max-height: 70vh; /* Limit height to allow scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        /* Grid for days and time slots */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr); /* 7 days + 1 time column */
+            gap: 5px;
+        }
+
+        /* Grid header (days of the week) */
+        .grid-header {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            color: #555;
+        }
+
+        /* Time slots */
+        .time-slot {
+            background: #fff;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .time-slot.selected {
+            background: #a1c4fd; /* Pastel blue for selected slots */
+        }
+
+        .time-slot:hover {
+            background: #f0f0f0;
+        }
+
+        /* Time column */
+        .time-column {
+            background: #f9f9f9;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Counter display */
+        .counter {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Save button styles */
+        #save-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #save-button:hover {
+            background: #ff4a3d;
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Particle background */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particles span {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 5s infinite ease-in-out;
+        }
+
+        .particles span:nth-child(1) {
+            top: 10%;
+            left: 20%;
+            animation-duration: 6s;
+        }
+
+        .particles span:nth-child(2) {
+            top: 30%;
+            left: 70%;
+            animation-duration: 8s;
+        }
+
+        .particles span:nth-child(3) {
+            top: 50%;
+            left: 40%;
+            animation-duration: 7s;
+        }
+
+        .particles span:nth-child(4) {
+            top: 70%;
+            left: 10%;
+            animation-duration: 9s;
+        }
+
+        .particles span:nth-child(5) {
+            top: 80%;
+            left: 60%;
+            animation-duration: 10s;
+        }
+    </style>
+  </head>
+  <body>
+    <!-- Particle background -->
+    <div class="particles">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Back button -->
+    <button id="back-button" onclick="window.location.href='index.html'">Back to Welcome</button>
+
+    <!-- Header -->
+    <header>Gather Up!</header>
+
+    <!-- Subheader with directions -->
+    <div class="subheader">
+        <p>Click on the time slots to select your availability. When you're done, click "Save Availability" to save your schedule.</p>
+    </div>
+
+    <!-- Main container -->
+    <div class="container">
+      <div class="grid">
+        <!-- Time column -->
+        <div class="time-column">Time</div>
+        <!-- Days of the week -->
+        <div class="grid-header">Monday</div>
+        <div class="grid-header">Tuesday</div>
+        <div class="grid-header">Wednesday</div>
+        <div class="grid-header">Thursday</div>
+        <div class="grid-header">Friday</div>
+        <div class="grid-header">Saturday</div>
+        <div class="grid-header">Sunday</div>
+
+        <!-- Time slots -->
+        <!-- Example: 7:00 AM to 12:00 AM -->
+        <script>
+          const times = [
+            "1:00 AM",
+            "2:00 AM",
+            "3:00 AM",
+            "4:00 AM",
+            "5:00 AM",
+            "6:00 AM",
+            "7:00 AM",
+            "8:00 AM",
+            "9:00 AM",
+            "10:00 AM",
+            "11:00 AM",
+            "12:00 PM",
+            "1:00 PM",
+            "2:00 PM",
+            "3:00 PM",
+            "4:00 PM",
+            "5:00 PM",
+            "6:00 PM",
+            "7:00 PM",
+            "8:00 PM",
+            "9:00 PM",
+            "10:00 PM",
+            "11:00 PM",
+            "12:00 AM",
+          ];
+
+          times.forEach((time) => {
+            document.write(`<div class="time-column">${time}</div>`);
+            for (let i = 0; i < 7; i++) {
+              document.write(
+                `<div class="time-slot" data-day="${i}" data-time="${time}"></div>`
+              );
+            }
+          });
+        </script>
+      </div>
+      <!-- Counter display -->
+      <div class="counter">Times Selected: <span id="Times-selected">0</span></div>
+      <!-- Save button -->
+      <button id="save-button">Save Availability</button>
+    </div>
+
+    <script>
+      // JavaScript for selecting/deselecting time slots
+      const timeSlots = document.querySelectorAll(".time-slot");
+      let daysSelected = 0; // Counter for selected days
+      const daysSelectedDisplay = document.getElementById("Times-selected");
+
+      timeSlots.forEach((slot) => {
+        slot.addEventListener("click", () => {
+          const isSelected = slot.classList.toggle("selected");
+
+          // Update the counter
+          if (isSelected) {
+            daysSelected++;
+          } else {
+            daysSelected--;
+          }
+
+          // Update the display
+          daysSelectedDisplay.textContent = daysSelected;
+        });
+      });
+
+      // Function to send data to the backend
+      const sendDataToBackend = () => {
+        const selectedSlots = Array.from(timeSlots)
+          .filter((slot) => slot.classList.contains("selected"))
+          .map((slot) => ({
+            day: slot.getAttribute("data-day"),
+            time: slot.getAttribute("data-time"),
+          }));
+
+        console.log("Selected Slots:", selectedSlots); // Log selected slots to the console
+        alert("Availability saved! Check the console for details.");
+      };
+
+      // Add event listener to the save button
+      document.getElementById("save-button").addEventListener("click", sendDataToBackend);
+    </script>
+  </body>
+</html>
